@@ -20,7 +20,7 @@ class RapidDns:
 
         if request.status_code != 200:
             logging.error(
-                "there was an error while reaching the rapiddns.io, the server is down? Trying again..."
+                "there was an error while reaching the rapiddns.io, the server responded with non-200 satus code"
             )
             return
 
