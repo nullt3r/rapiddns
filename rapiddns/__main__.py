@@ -79,12 +79,12 @@ def main():
         parser.error('parameter --subdomains or --ip is required. You can specify both.')
 
     if arg_subdomains is not None:
-        for value in RapidDns.getSubdomains(arg_subdomains):
-            print(value[0])
-    
+        subdomains = [resource[0] for resource in RapidDns.ipToDomains(arg_subdomains)]
+        print("\n".join(set(subdomains)))    
+
     if arg_ip is not None:
-        for value in RapidDns.ipToDomains(arg_ip):
-            print(value[0])     
+        domains = [resource[0] for resource in RapidDns.ipToDomains(arg_ip)]
+        print("\n".join(set(domains)))    
 
 if __name__ == "__main__":
     main()
