@@ -48,7 +48,7 @@ class RapidDns:
     
     @classmethod
     def ipToDomains(cls, domain):
-        url = f"https://rapiddns.io/s/{domain}?full=1&down=1"
+        url = f"https://rapiddns.io/sameip/{domain}?full=1&down=1"
         return cls.__extract_items(url)
 
 
