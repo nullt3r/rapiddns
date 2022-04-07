@@ -8,6 +8,7 @@ As mentioned on the rapiddns.io:
 # Installation
 ```
 git clone https://github.com/nullt3r/rapiddns
+cd rapiddns
 pip3 install .
 ```
 
