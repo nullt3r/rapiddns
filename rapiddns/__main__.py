@@ -8,37 +8,36 @@ class RapidDns:
     @staticmethod
     def __extract_items(url):
         items = []
-        for i in range(5):
-            try:
-                request = requests.get(url)
-                html = request.content
-            except Exception as e:
-                logging.error(
-                    "there was an error while reaching rapiddns.io: %s", e
-                )
-                time.sleep(5)
-                continue
 
-            if request.status_code != 200:
-                logging.error(
-                    "there was an error while reaching the rapiddns.io, the server is down? Trying again..."
-                )
-                time.sleep(5)
-                continue
+        try:
+            request = requests.get(url)
+            html = request.content
+        except Exception as e:
+            logging.error(
+                "there was an error while reaching rapiddns.io: %s", e
+            )
+            return
 
-            try:
-                soup = BeautifulSoup(html, "html.parser")
-                table = soup.find("table", id="table")
-                rows = table.findAll("tr")
-                items = []
-                for row in rows:
-                    cells = row.findAll("td")
-                    items.append([value.text.strip() for value in cells])
-            except Exception as e:
-                logging.error(
-                    "can't extract data from rapiddns.io, reason: %s", e
-                )
-                continue
+        if request.status_code != 200:
+            logging.error(
+                "there was an error while reaching the rapiddns.io, the server is down? Trying again..."
+            )
+            return
+
+        try:
+            soup = BeautifulSoup(html, "html.parser")
+            table = soup.find("table", id="table")
+            rows = table.findAll("tr")
+            items = []
+            for row in rows:
+                cells = row.findAll("td")
+                items.append([value.text.strip() for value in cells])
+        except Exception as e:
+            logging.error(
+                "can't extract data from rapiddns.io, reason: %s", e
+            )
+            return
+
 
         return items[1:]
     
