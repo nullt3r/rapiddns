@@ -28,7 +28,7 @@ setup(
         "Programming Language :: Python :: 3.9",
     ],
     packages=find_packages(),
-    install_requires=["requests", "bs4", "logging"],
+    install_requires=["requests", "bs4"],
     entry_points={
         "console_scripts": [
             "rapiddns=rapiddns.__main__:main",
