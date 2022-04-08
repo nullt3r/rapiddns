@@ -56,8 +56,8 @@ def main():
     parser = argparse.ArgumentParser(description="rapiddns - a simple python client for rapiddns.io by @nullt3r")
 
     parser.add_argument(
-        "-s",
         "--subdomains",
+        "-s",
         action="store",
         help="expecting a domain name",
         required=False,
@@ -68,22 +68,37 @@ def main():
         help="expecting an IP adress or CIDR",
         required=False,
     )
+    parser.add_argument(
+        "--full",
+        action="store_true",
+        help="full output with detailed information",
+        required=False,
+    )
 
     args = parser.parse_args()
 
     arg_subdomains = args.subdomains
     arg_ip = args.ip
+    arg_full = args.full
 
-    if not (arg_subdomains or arg_ip):
+    if (arg_subdomains or arg_ip) is None:
         parser.error('parameter --subdomains or --ip is required. You can specify both.')
 
     if arg_subdomains is not None:
-        subdomains = [resource[0] for resource in RapidDns.ipToDomains(arg_subdomains)]
-        print("\n".join(set(subdomains)))    
+        if arg_full is True:
+            for line in RapidDns.getSubdomains(arg_subdomains):
+                print(", ".join(line))
+        else:
+            subdomains = [resource[0] for resource in RapidDns.getSubdomains(arg_subdomains)]
+            print("\n".join(set(subdomains)))
 
     if arg_ip is not None:
-        domains = [resource[0] for resource in RapidDns.ipToDomains(arg_ip)]
-        print("\n".join(set(domains)))    
+        if arg_full is True:
+            for line in RapidDns.ipToDomains(arg_ip):
+                print(", ".join(line))
+        else:
+            domains = [resource[0] for resource in RapidDns.ipToDomains(arg_ip)]
+            print("\n".join(set(domains)))
 
 if __name__ == "__main__":
     main()
