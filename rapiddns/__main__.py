@@ -10,8 +10,9 @@ class RapidDns:
         items = []
 
         try:
-            request = requests.get(url)
+            request = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36"})
             html = request.content
+            print(request.request.url)
         except Exception as e:
             logging.error(
                 "there was an error while reaching rapiddns.io: %s", e
@@ -43,12 +44,12 @@ class RapidDns:
     
     @classmethod
     def getSubdomains(cls, domain):
-        url = f"https://rapiddns.io/s/{domain}?full=1&down=1"
+        url = f"https://rapiddns.io/subdomain/{domain}?full=1&down=1"
         return cls.__extract_items(url)
     
     @classmethod
-    def ipToDomains(cls, domain):
-        url = f"https://rapiddns.io/sameip/{domain}?full=1&down=1"
+    def ipToDomains(cls, ip):
+        url = f"https://rapiddns.io/s/{ip}?full=1&down=1"
         return cls.__extract_items(url)
 
 
