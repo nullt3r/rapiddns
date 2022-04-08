@@ -53,7 +53,9 @@ class RapidDns:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="rapiddns - a simple python client for rapiddns.io by @nullt3r")
+    from rapiddns import __version__
+
+    parser = argparse.ArgumentParser(description=f"rapiddns v{__version__.__version__} - a simple python client for rapiddns.io by @nullt3r")
 
     parser.add_argument(
         "--subdomains",
@@ -87,7 +89,7 @@ def main():
     if arg_subdomains is not None:
         if arg_full is True:
             for line in RapidDns.getSubdomains(arg_subdomains):
-                print(", ".join(line))
+                print(" ".join(line))
         else:
             subdomains = [resource[0] for resource in RapidDns.getSubdomains(arg_subdomains)]
             print("\n".join(set(subdomains)))
@@ -95,7 +97,7 @@ def main():
     if arg_ip is not None:
         if arg_full is True:
             for line in RapidDns.ipToDomains(arg_ip):
-                print(", ".join(line))
+                print(" ".join(line))
         else:
             domains = [resource[0] for resource in RapidDns.ipToDomains(arg_ip)]
             print("\n".join(set(domains)))
