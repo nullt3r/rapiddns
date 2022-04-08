@@ -1,8 +1,15 @@
 import requests
 import argparse
-import logging
-import time
 from bs4 import BeautifulSoup
+
+class RapidDnsNetworkError(Exception):
+    pass
+
+class RapidDnsHTTPError(Exception):
+    pass
+
+class RapidDnsHTMLParserError(Exception):
+    pass
 
 class RapidDns:
     @staticmethod
@@ -13,16 +20,10 @@ class RapidDns:
             request = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36"})
             html = request.content
         except Exception as e:
-            logging.error(
-                "there was an error while reaching rapiddns.io: %s", e
-            )
-            return
+            raise RapidDnsNetworkError("can't connect to rapiddns.io")
 
         if request.status_code != 200:
-            logging.error(
-                "there was an error while reaching the rapiddns.io, the server responded with non-200 satus code"
-            )
-            return
+            raise RapidDnsHTTPError("there was an error while reaching the rapiddns.io, the server responded with non-200 satus code")
 
         try:
             soup = BeautifulSoup(html, "html.parser")
@@ -33,10 +34,7 @@ class RapidDns:
                 cells = row.findAll("td")
                 items.append([value.text.strip() for value in cells])
         except Exception as e:
-            logging.error(
-                "can't extract data from rapiddns.io, reason: %s", e
-            )
-            return
+            raise RapidDnsHTMLParserError("can't parse HTML data from rapiddns.io")
 
 
         return items[1:]
