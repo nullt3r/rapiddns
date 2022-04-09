@@ -1,54 +1,6 @@
-import requests
 import argparse
-from bs4 import BeautifulSoup
 
-class RapidDnsNetworkError(Exception):
-    pass
-
-class RapidDnsHTTPError(Exception):
-    pass
-
-class RapidDnsHTMLParserError(Exception):
-    pass
-
-class RapidDns:
-    @staticmethod
-    def __extract_items(url):
-        items = []
-
-        try:
-            request = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36"})
-            html = request.content
-        except Exception as e:
-            raise RapidDnsNetworkError("can't connect to rapiddns.io")
-
-        if request.status_code != 200:
-            raise RapidDnsHTTPError("there was an error while reaching the rapiddns.io, the server responded with non-200 satus code")
-
-        try:
-            soup = BeautifulSoup(html, "html.parser")
-            table = soup.find("table", id="table")
-            rows = table.findAll("tr")
-            items = []
-            for row in rows:
-                cells = row.findAll("td")
-                items.append([value.text.strip() for value in cells])
-        except Exception as e:
-            raise RapidDnsHTMLParserError("can't parse HTML data from rapiddns.io")
-
-
-        return items[1:]
-    
-    @classmethod
-    def getSubdomains(cls, domain):
-        url = f"https://rapiddns.io/subdomain/{domain}?full=1&down=1"
-        return cls.__extract_items(url)
-    
-    @classmethod
-    def ipToDomains(cls, ip):
-        url = f"https://rapiddns.io/s/{ip}?full=1&down=1"
-        return cls.__extract_items(url)
-
+from rapiddns import RapidDns
 
 def main():
     from rapiddns import __version__
@@ -86,18 +38,18 @@ def main():
 
     if arg_subdomains is not None:
         if arg_full is True:
-            for line in RapidDns.getSubdomains(arg_subdomains):
+            for line in RapidDns.subdomains(arg_subdomains):
                 print(" ".join(line))
         else:
-            subdomains = [resource[0] for resource in RapidDns.getSubdomains(arg_subdomains)]
+            subdomains = [resource[0] for resource in RapidDns.subdomains(arg_subdomains)]
             print("\n".join(set(subdomains)))
 
     if arg_ip is not None:
         if arg_full is True:
-            for line in RapidDns.ipToDomains(arg_ip):
+            for line in RapidDns.sameip(arg_ip):
                 print(" ".join(line))
         else:
-            domains = [resource[0] for resource in RapidDns.ipToDomains(arg_ip)]
+            domains = [resource[0] for resource in RapidDns.sameip(arg_ip)]
             print("\n".join(set(domains)))
 
 if __name__ == "__main__":

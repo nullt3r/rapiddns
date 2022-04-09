@@ -1,5 +1,5 @@
 # Description
-Simple python module (unofficial) allowing you to access data from rapiddns.io. You can also use it as an library.
+Simple python module (unofficial) allowing you to access data from rapiddns.io. You can also use it as a module.
 
 As mentioned on the rapiddns.io:
 
@@ -34,6 +34,22 @@ rapiddns --ip 8.8.8.8/24
 You can also combine both options.
 
 To display full output, use option --full.
+
+To use rapiddns as the module:
+
+``` python
+from rapiddns import RapidDns
+
+enum_subdomains = RapidDns.subdomains("domain.com")
+enum_domains = RapidDns.sameip("1.2.3.4/24")
+
+for subdomain in enum_subdomains:
+    print(" ".join(subdomain))
+
+for domain in enum_domains:
+    print(" ".join(domain))
+
+```
 
 # License
 Read file LICENSE.
